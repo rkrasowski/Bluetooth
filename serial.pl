@@ -25,29 +25,29 @@ $| = 1;
 
 print "\nSerial communication established with bluetooth module\n##############################\n\n";
 
+while(1)
+	{
+		my $rx = $ob->read(255);
+		if ($rx)
+			{
+				print $rx;
+			}
+	}
+
+
+test();
 #cmdMode();
 #checkSetting();
 #setMode(0);
 #checkSetting();
-inquiry();
-exit;
+#setPin(1111);
+#memAddress("000C78329D91");
+#setMode(5);
+#checkSetting();
+#inquiry();
+
 
 	
-
-
-
-$ob->write("E\n");
-	while(1)
-		{
-			my $rx = $ob->read(255);
-			print "rx: $rx\n";
-			sleep(1);
-			if ($rx =~ m/000C78329D91/)
-				{
-					print "$rx\n";
-					goto CONNECTING;
-				}
-		}
 
 
 CONNECTING:
@@ -137,4 +137,29 @@ sub inquiry
 
 			}
 		inqDone:
+	}
+
+sub setPin
+	{
+		my $pin = shift;
+		$ob->write("SP,$pin\n");
+                sleep(1);
+		 $rx = $ob->read(255);
+                print "Rx: $rx\n";
+	}
+
+sub memAddress
+	{
+		my $address = shift;
+		$ob->write("SR,$address\n");
+                sleep(1);
+                 $rx = $ob->read(255);
+                print "Rx: $rx\n";
+	}
+
+sub test	
+	{
+		 $ob->write("Test. test , test\n");
+
+
 	}
