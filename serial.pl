@@ -10,6 +10,8 @@ use Device::SerialPort;
 # Activate serial connection:
 my $PORT = "/dev/ttyO1";
 my $serialData;
+my $rx;
+
 
 my $ob = Device::SerialPort->new($PORT) || die "Can't Open $PORT: $!";
 
@@ -21,22 +23,20 @@ $ob->write_settings || die "no settings";
 $| = 1;
 
 
-print "Serial communication established with bluetooth module\n";
+print "\nSerial communication established with bluetooth module\n##############################\n\n";
 
-cmdMode();
-
+#cmdMode();
+#checkSetting();
+#setMode(0);
+#checkSetting();
+inquiry();
 exit;
 
-#$ob->write("\$\$\$");		#enter command mode
 	
-sleep(1);
-my $rx = $ob->read(255);
-                print "Command: $rx\n";
 
 
-#$ob->write("E\n");
 
-$ob->write("I\n");
+$ob->write("E\n");
 	while(1)
 		{
 			my $rx = $ob->read(255);
@@ -93,4 +93,48 @@ sub cmdMode
 
 
 
+sub checkSetting 
+	{
 
+		$ob->write("D\n");
+                sleep(1);
+		while(1)
+			{
+				$rx = $ob->read(255);
+				print "Rx: $rx\n";
+				sleep(1);
+				if ($rx =~ m/Rem/)
+					{
+						goto ENDCHECK;	
+					}
+			}
+		ENDCHECK:
+	}
+
+sub setMode
+	{
+		# modes: 0- slave, 1 - master, 2 - trigger,  3- auto connect master, 4- auto connect DTR, 5 - Auto-connect any mode
+		my $mode = shift;
+		$ob->write("SM,$mode\n");
+                sleep(1);
+		$rx = $ob->read(255);
+                print "Rx: $rx\n";
+	}
+
+sub inquiry 
+	{
+		$ob->write("I\n");
+                sleep(1);
+		while(1)
+                        {
+                                $rx = $ob->read(255);
+                                print ". $rx";
+                                sleep(1);
+				if ($rx =~ m/Done/)
+					{
+						goto inqDone;
+					}
+
+			}
+		inqDone:
+	}
