@@ -21,8 +21,11 @@ $ob->write_settings || die "no settings";
 $| = 1;
 
 
-print "Setting bluetooth module\n";
+print "Serial communication established with bluetooth module\n";
 
+cmdMode();
+
+exit;
 
 #$ob->write("\$\$\$");		#enter command mode
 	
@@ -64,3 +67,30 @@ while (1)
 
 
 }
+
+####################################### Subroutines ##################################
+
+sub cmdMode 
+	{
+		$ob->write("\$\$\$");
+		sleep(1);
+		while (1)			
+			{
+				$rx = $ob->read(255);
+				sleep(1);
+				print "Rx: $rx\n";
+				if ($rx =~ m/CMD/)
+					{
+						print "Rx data is : $rx\n";
+						print "I am in command mode... \n";
+						goto POSTCMD;
+					}
+
+			}
+		POSTCMD:
+	}
+
+
+
+
+
