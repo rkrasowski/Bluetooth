@@ -15,13 +15,17 @@ $ob->write_settings || die "no settings";
 $| = 1;
 
 
+$ob->write_settings;
+$ob->save("tpj4.cfg");
 
-my $Config = "";
+print "wrote configuration file tpj4.cfg\n";
+
+my $Config = "tpj4.cfg";
 
 
 
-my $string  = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20\n";
-$ob->write( "$string\n");
+#my $string  = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20\n";
+#$ob->write( "$string\n");
 
 
 $ob = tie (*FH, 'Device::SerialPort', $Config)
