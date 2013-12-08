@@ -5,9 +5,7 @@ use Device::SerialPort;
 
 my $PORT = "/dev/ttyO1";
 my $Config = "serial.cfg";
-my $string  = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20";
-
-
+my $string  = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20";
 
 my $ob = Device::SerialPort->new($PORT) || die "Can't Open $PORT: $!";
 
@@ -18,21 +16,31 @@ $ob->handshake("none") || die "failed setting handshake";
 $ob->write_settings || die "no settings";
 $| = 1;
 
-
 $ob->write_settings;
 $ob->save("serial.cfg");
-
-
-
 $ob = tie (*FH, 'Device::SerialPort', $Config)
        || die "Can't tie: $!\n";             ## TIEHANDLE ##
 
 print FH $string;  
 
 
+while(1)
+	{
+		my $rx = $ob->read(255);
+		if ($rx)
+			{
+				print "Rx: $rx\n";
+			}	   
+	}
+
+
+
+
+
+
 close FH || warn "close failed";
 undef $ob;
-
+untie *FH;
 
 
 
