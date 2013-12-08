@@ -4,6 +4,10 @@ use warnings;
 use Device::SerialPort;
 
 my $PORT = "/dev/ttyO1";
+my $Config = "serial.cfg";
+my $string  = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20";
+
+
 
 my $ob = Device::SerialPort->new($PORT) || die "Can't Open $PORT: $!";
 
@@ -16,20 +20,19 @@ $| = 1;
 
 
 $ob->write_settings;
-$ob->save("tpj4.cfg");
+$ob->save("serial.cfg");
 
-print "wrote configuration file tpj4.cfg\n";
-
-my $Config = "tpj4.cfg";
-
-
-
-#my $string  = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20\n";
-#$ob->write( "$string\n");
 
 
 $ob = tie (*FH, 'Device::SerialPort', $Config)
        || die "Can't tie: $!\n";             ## TIEHANDLE ##
+
+print FH $string;  
+
+
+close FH || warn "close failed";
+undef $ob;
+
 
 
 
