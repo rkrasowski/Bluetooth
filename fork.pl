@@ -39,14 +39,25 @@ if( $pid == 0 )
  
 
 
-
+my $command = "";
 
 while(1)
-	{
+	{	
 		my $rx = $ob->read(255);
 		if ($rx)
 			{
-				print $rx;
+				if ($rx  !~ m/\n/)
+					{
+					
+						$command = $command.$rx;
+					}
+				else
+					{
+						my $result = `$command`;
+					
+						print FH $result;
+						$command = "";
+					}
 			}
 	
 	}
